@@ -10,10 +10,11 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private BufferedReader reader;
     private PrintWriter writer;
-    private ChatServidor chatServer;
+    private Chat chatServer;
     private String nickname;
 
-    public ClientHandler(Socket socket, ChatServidor server) {
+
+    public ClientHandler(Socket socket, Chat server) {
         this.clientSocket = socket;
         this.chatServer = server;
 
@@ -22,7 +23,7 @@ public class ClientHandler implements Runnable {
             writer = new PrintWriter(socket.getOutputStream(), true);
 
             nickname = reader.readLine();
-            System.out.println("Nuevo usuario conectado: " + nickname);
+            System.out.println(nickname);
         } catch (IOException e) {
             e.printStackTrace();
         }
