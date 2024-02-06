@@ -12,23 +12,40 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Chat extends Application {
+public class Chat{
     private ServerSocket serverSocket;
     private List<ClientHandler> clients = new ArrayList<>();
 
+    private boolean servidorAbierto = true;
 
-    public void iniciarServidor(int port) {
+    public void iniciarServidor(int port, String nickname) {
         try {
             serverSocket = new ServerSocket(port);
             //log("Servidor de chat iniciado en el puerto " + port);
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                //log("Nuevo cliente conectado: " + clientSocket);
+            new Thread(() -> {
+                while (servidorAbierto) {
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+                        clients.add(clientHandler);
+                        new Thread(clientHandler).start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void cerrarServidor() {
+        try {
+            servidorAbierto = false;
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+                // También puedes realizar otras acciones necesarias aquí
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,13 +65,7 @@ public class Chat extends Application {
         System.out.println("Cliente desconectado: " + client.getNickname());
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        System.out.println("Iniciando servidor...");
-        iniciarServidor(8000);
-        mostrarVistaChat(stage,this);
-    }
-    private void mostrarVistaChat(Stage primaryStage, Chat chat) {
+    public void mostrarVistaChat(Stage primaryStage, String nickname, Socket socket) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("chat.fxml"));
             Parent root = loader.load();
@@ -62,9 +73,10 @@ public class Chat extends Application {
 
             // Configurar el controlador de chat
             ControladorChat chatController = loader.getController();
-            Socket socket = new Socket("localhost", 8000);
+
 
             chatController.setSocket(socket);
+            chatController.setNickname(nickname);
 
             primaryStage.setTitle("Chat");
             primaryStage.setScene(scene);

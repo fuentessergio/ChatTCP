@@ -6,29 +6,35 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.net.Socket;
+
 public class ControladorLogin {
     @FXML
     private TextField nicknameField;
 
     @FXML
     private Button startButton;
-
-
     private Chat chatServidor;
+    public ControladorLogin() {
+    }
 
-    public ControladorLogin(TextField nicknameField, Button startButton) {
+    public ControladorLogin(TextField nicknameField, Button startButton, Chat chatServidor) {
         setNicknameField(nicknameField);
         this.startButton = startButton;
+        setChatServidor(chatServidor);
     }
 
     @FXML
     private void handleStartButtonAction(ActionEvent event) throws Exception {
         if(nicknameField.getText() != null && !nicknameField.getText().isEmpty()){
-        Chat chat = new Chat();
-        Stage primaryStage = new Stage();
-        chat.start(primaryStage);
+            String nickname = nicknameField.getText();
 
-        ((Stage) startButton.getScene().getWindow()).close();
+            chatServidor.iniciarServidor(8000, nickname);
+
+            Stage currentStage = (Stage) startButton.getScene().getWindow();
+            currentStage.close();
+            chatServidor.mostrarVistaChat(new Stage(), nickname, new Socket("localhost", 8000));
+
         }
     }
 
@@ -55,11 +61,12 @@ public class ControladorLogin {
     }
 
     public void setChatServidor(Chat chatServidor) {
-        this.chatServidor = chatServidor;
+        if(chatServidor != null){
+            this.chatServidor = chatServidor;
+        } else throw new RuntimeException("ERROR");
+
     }
 
-    public ControladorLogin() {
-    }
     public void initialize() {
         System.out.println("ControladorLogin initialized.");
     }

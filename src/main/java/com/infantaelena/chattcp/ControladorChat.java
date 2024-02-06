@@ -38,6 +38,10 @@ public class ControladorChat {
     private void sendMessage() {
         String message = messageField.getText();
         if (!message.isEmpty()) {
+
+            System.out.println("Enviando mensaje al servidor: " + message);
+            System.out.println("Nickname actual: " + nickname);
+
             writer.println(message);
             messageField.clear();
         }
@@ -62,6 +66,7 @@ public class ControladorChat {
         try {
             String message;
             while ((message = reader.readLine()) != null) {
+                System.out.println("Nickname actual: " + nickname);
                 chatArea.appendText(message + "\n");
             }
         } catch (IOException e) {
@@ -71,5 +76,9 @@ public class ControladorChat {
     private void appendMessageToChatArea(String message) {
         // Este método permite que la actualización de la GUI se realice en el hilo de la interfaz de usuario
         chatArea.appendText(message + "\n");
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+        // Lógica adicional si es necesario
     }
 }
