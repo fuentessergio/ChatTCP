@@ -14,7 +14,7 @@ public class ControladorLogin {
 
     @FXML
     private Button startButton;
-    private Chat chatServidor;
+    private Chat chat;
     public ControladorLogin() {
     }
 
@@ -29,12 +29,13 @@ public class ControladorLogin {
         if(nicknameField.getText() != null && !nicknameField.getText().isEmpty()){
             String nickname = nicknameField.getText();
 
-            chatServidor.iniciarServidor(8000, nickname);
-
-            Stage currentStage = (Stage) startButton.getScene().getWindow();
-            currentStage.close();
-            chatServidor.mostrarVistaChat(new Stage(), nickname, new Socket("localhost", 8000));
-
+            System.out.println("chat: " + chat);
+            if(chat.isServidorIniciado()) {
+                System.out.println("Servidor iniciado");
+                Stage currentStage = (Stage) startButton.getScene().getWindow();
+                currentStage.close();
+                chat.mostrarVistaChat(new Stage(), nickname, new Socket("localhost", 8000));
+            }
         }
     }
 
@@ -57,17 +58,20 @@ public class ControladorLogin {
         this.startButton = startButton;
     }
     public Chat getChatServidor() {
-        return chatServidor;
+        return chat;
     }
 
     public void setChatServidor(Chat chatServidor) {
         if(chatServidor != null){
-            this.chatServidor = chatServidor;
+            this.chat = chatServidor;
         } else throw new RuntimeException("ERROR");
 
     }
 
     public void initialize() {
         System.out.println("ControladorLogin initialized.");
+        chat = new Chat();
+        System.out.println("chat: " + chat);
+        setChatServidor(chat);
     }
 }

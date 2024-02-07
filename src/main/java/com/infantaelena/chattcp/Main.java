@@ -13,7 +13,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         try {
             // Crear una instancia única de Chat
-            Chat chat = new Chat();
 
             // Cargar la vista de login
             FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("login.fxml"));
@@ -21,7 +20,7 @@ public class Main extends Application {
 
             // Obtener el controlador de login y establecer la instancia de Chat
             ControladorLogin loginController = loginLoader.getController();
-            loginController.setChatServidor(chat);
+
 
             // Configurar la escena y mostrar la ventana de inicio de sesión
             Scene loginScene = new Scene(root, 300, 200);

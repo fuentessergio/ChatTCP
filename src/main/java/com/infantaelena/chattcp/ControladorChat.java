@@ -19,6 +19,8 @@ import java.net.Socket;
 public class ControladorChat {
     private String nickname;
     private Socket socket;
+
+    private Chat chat;
     private BufferedReader reader;
     private PrintWriter writer;
     @FXML
@@ -33,6 +35,14 @@ public class ControladorChat {
     public void initialize() {
         // Configurar la acción del botón de enviar
         sendButton.setOnAction(event -> sendMessage());
+    }
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+        System.out.println("chat: " + chat);
     }
 
     private void sendMessage() {
@@ -67,16 +77,13 @@ public class ControladorChat {
             String message;
             while ((message = reader.readLine()) != null) {
                 System.out.println("Nickname actual: " + nickname);
-                chatArea.appendText(message + "\n");
+                chatArea.appendText(nickname + ": " + message + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private void appendMessageToChatArea(String message) {
-        // Este método permite que la actualización de la GUI se realice en el hilo de la interfaz de usuario
-        chatArea.appendText(message + "\n");
-    }
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
         // Lógica adicional si es necesario
