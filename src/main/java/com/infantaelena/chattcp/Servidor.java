@@ -3,64 +3,50 @@ package com.infantaelena.chattcp;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Servidor {
-    private ServerSocket serverSocket;
-    private boolean servidorIniciado = false;
+    private int port;
+    private Set<ClienteHilo> clientHandlers = new HashSet<>(); // para que no haya duplicados
 
-    public boolean isServidorIniciado() {
-        return servidorIniciado;
+    public Servidor(int port) {
+        this.port = port;
     }
 
-    public void iniciarServidor(int port, Chat chat) {
-        if (!servidorIniciado) {
-            try {
-                serverSocket = new ServerSocket(port);
-                servidorIniciado = true;
+    public void start() {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Servidor iniciado en el puerto: " + port);
 
-                new Thread(() -> {
-                    while (servidorIniciado) {
-                        try {
-                            Socket clientSocket = serverSocket.accept();
-                            System.out.println("Servidor iniciado correctamente");
-                            ClientHandler clientHandler = new ClientHandler(clientSocket, chat);
-                            chat.getClients().add(clientHandler);
-                            new Thread(clientHandler).start();
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("Nuevo usuario conectado");
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-            } catch (IOException e) {
-                e.printStackTrace();
+                ClienteHilo nuevoUsuario = new ClienteHilo(socket, this);
+                clientHandlers.add(nuevoUsuario);
+                new Thread(nuevoUsuario).start();
             }
+
+        } catch (IOException ex) {
+            System.out.println("Server exception: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    public void cerrarServidor() {
-        if (servidorIniciado) {
-            servidorIniciado = false;
-
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void difundirMensaje(String message) {
+        for (ClienteHilo usuario : clientHandlers) {
+            usuario.enviarMensaje(message);
         }
+    }
+
+    public void borrarUsuario(ClienteHilo usuario) {
+        clientHandlers.remove(usuario);
+        System.out.println("El usuario se ha desconectado del chat");
     }
 
     public static void main(String[] args) {
-        // Crear una instancia de Servidor
-        Servidor servidor = new Servidor();
-
-
-        // Iniciar el servidor
-        servidor.iniciarServidor(8000, new Chat());
-
+        final int PORT = 8000;
+        Servidor server = new Servidor(PORT);
+        server.start();
     }
 }

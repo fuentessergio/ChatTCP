@@ -12,18 +12,13 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            // Crear una instancia única de Chat
-
-            // Cargar la vista de login
             FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("login.fxml"));
             Parent root = loginLoader.load();
-
-            // Obtener el controlador de login y establecer la instancia de Chat
-            ControladorLogin loginController = loginLoader.getController();
-
-
-            // Configurar la escena y mostrar la ventana de inicio de sesión
             Scene loginScene = new Scene(root, 300, 200);
+
+            ControladorLogin loginController = loginLoader.getController();
+            loginController.setStage(stage);
+
             stage.setTitle("Inicio");
             stage.setScene(loginScene);
             stage.show();

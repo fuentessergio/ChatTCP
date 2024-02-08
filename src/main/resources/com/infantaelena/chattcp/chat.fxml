@@ -11,5 +11,5 @@
    <Label alignment="TOP_CENTER" prefHeight="18.0" prefWidth="110.0" text="Proyecto Chat" textFill="#472bed" />
    <TextArea fx:id="chatArea" prefHeight="234.0" prefWidth="305.0" editable="false" />
    <TextField fx:id="messageField" alignment="TOP_RIGHT" prefHeight="51.0" prefWidth="319.0" promptText="Escribe un mensaje" />
-    <Button  fx:id="sendButton" prefHeight="35.0" prefWidth="59.0" text="Enviar" textFill="#1217c7" />
+    <Button  fx:id="sendButton" prefHeight="35.0" prefWidth="59.0" text="Enviar" textFill="#1217c7" onAction="#sendMessage" />
 </VBox>

@@ -5,8 +5,8 @@
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.infantaelena.chattcp.ControladorLogin">
    <children>
-      <Button fx:id="startButton" layoutX="108.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleStartButtonAction" prefHeight="21.0" prefWidth="84.0" text="Inicio" />
-      <TextField fx:id="nicknameField" onAction="#getNicknameField" alignment="CENTER" layoutX="59.0" layoutY="83.0" prefHeight="34.0" prefWidth="182.0" promptText="Escribe tu nickname" />
+      <Button fx:id="startButton" layoutX="93.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleStartButtonAction" prefHeight="24.0" prefWidth="113.0" text="Ingresar al chat" />
+      <TextField fx:id="nicknameField" alignment="CENTER" layoutX="59.0" layoutY="83.0"  prefHeight="34.0" prefWidth="182.0" promptText="Escribe tu nickname" />
       <Label alignment="CENTER" layoutX="98.0" layoutY="33.0" prefHeight="34.0" prefWidth="103.0" text="Accede al chat" />
    </children>
 </AnchorPane>
