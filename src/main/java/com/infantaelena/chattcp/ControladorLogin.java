@@ -1,23 +1,34 @@
 package com.infantaelena.chattcp;
 
-import javafx.event.ActionEvent;
+import com.infantaelena.chattcp.excepciones.ClienteNotFoundException;
+import com.infantaelena.chattcp.excepciones.NicknameException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class ControladorLogin {
     @FXML
     private TextField nicknameField;
 
+    @FXML
+    private Button inicioButton;
+
+    @FXML
+    private Label mensajeAdvertenciaLabel;
+
     private Stage stage;
 
+    public ControladorLogin(){
+
+    }
     public Stage getStage() {
         return stage;
     }
@@ -25,17 +36,26 @@ public class ControladorLogin {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+
     @FXML
-    private void handleStartButtonAction() {
-        String nickname = nicknameField.getText().trim();
-        if (nickname != null && !nickname.isEmpty()  ) {
+    private void handleStartButtonAction() throws NicknameException {
+        String nickname = nicknameField.getText().trim().toUpperCase();
+        if (nickname == null || nickname.isEmpty()) {
+            mensajeAdvertenciaLabel.setVisible(true);
+        } else {
+            mensajeAdvertenciaLabel.setVisible(false);
             Cliente cliente = new Cliente(nickname);
             cliente.execute();
 
-            mostrarVistaChat(stage, cliente);
+            try {
+                mostrarVistaChat(stage, cliente);
+            } catch (ClienteNotFoundException e) {
+                System.err.println("El cliente no se ha podido encontrar " + e.getMessage());
+            }
         }
     }
-    public void mostrarVistaChat(Stage stage, Cliente cliente) {
+    public void mostrarVistaChat(Stage stage, Cliente cliente) throws ClienteNotFoundException {
         System.out.println("mostrarVistaChat ejecutado.");
 
         try {

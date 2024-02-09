@@ -1,5 +1,6 @@
 package com.infantaelena.chattcp;
 
+import com.infantaelena.chattcp.excepciones.NicknameException;
 import javafx.application.Platform;
 
 import java.io.*;
@@ -13,19 +14,12 @@ public class Cliente implements Serializable {
     private static final int PORT = 8000;
     private String nickname;
 
-    public String getId() {
-        return id;
-    }
-
-    private final String id = UUID.randomUUID().toString();
-
-
     private Socket socket;
     private PrintWriter writer;
 
     private Consumer<String> mensajeRecibido;
 
-    public Cliente(String nickname) {
+    public Cliente(String nickname) throws NicknameException {
         setNickname(nickname);
     }
 
@@ -37,13 +31,12 @@ public class Cliente implements Serializable {
         try {
             socket = new Socket(HOSTNAME,PORT);
 
-            System.out.println("Conectado al servidor soy " + getId());
+            System.out.println("Conectado al servidor soy " + getNickname());
 
             writer = new PrintWriter(socket.getOutputStream(), true);
 
             new Thread(() -> {
                 try {
-                    System.out.println("Estoy creando el hilo de cliente");
                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String message;
                     while ((message = reader.readLine()) != null) {
@@ -58,7 +51,6 @@ public class Cliente implements Serializable {
                     }
                 } catch (IOException e) {
                     System.out.println("Error leyendo del servidor: " + e.getMessage());
-                    e.printStackTrace();
                 }
             }).start();
         } catch (UnknownHostException ex) {
@@ -68,11 +60,11 @@ public class Cliente implements Serializable {
         }
     }
 
-    void setNickname(String nickname) {
+    public void setNickname(String nickname) throws NicknameException {
         if(nickname != null){
             this.nickname = nickname;
         } else {
-            throw new IllegalArgumentException();
+            throw new NicknameException("El nickname no puede ser nulo. Introduzca uno");
         }
 
     }
@@ -84,7 +76,7 @@ public class Cliente implements Serializable {
         }
     }
 
-    String getNickname() {
+    public String getNickname() {
         return this.nickname;
     }
 

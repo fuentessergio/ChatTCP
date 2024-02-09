@@ -1,5 +1,7 @@
 package com.infantaelena.chattcp;
 
+import com.infantaelena.chattcp.excepciones.ServerException;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +16,7 @@ public class Servidor {
         this.port = port;
     }
 
-    public void start() {
+    public void start() throws ServerException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Servidor iniciado en el puerto: " + port);
 
@@ -28,8 +30,8 @@ public class Servidor {
             }
 
         } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
-            ex.printStackTrace();
+            throw new ServerException("El servidor no se ha podido iniciar correctamente. " + ex.getMessage());
+
         }
     }
 
@@ -44,7 +46,7 @@ public class Servidor {
         System.out.println("El usuario se ha desconectado del chat");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ServerException {
         final int PORT = 8000;
         Servidor server = new Servidor(PORT);
         server.start();
