@@ -19,6 +19,7 @@ public class Main extends Application {
             ControladorLogin loginController = loginLoader.getController();
             loginController.setStage(stage);
 
+
             stage.setTitle("Inicio");
             stage.setScene(loginScene);
             stage.show();

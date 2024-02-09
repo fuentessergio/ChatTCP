@@ -1,4 +1,6 @@
-package com.infantaelena.chattcp;
+package com.infantaelena.chattcp.cliente;
+
+import com.infantaelena.chattcp.Servidor;
 
 import java.io.*;
 import java.net.Socket;

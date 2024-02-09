@@ -5,5 +5,7 @@ module com.infantaelena.chattcp {
 
     opens com.infantaelena.chattcp to javafx.fxml;
     exports com.infantaelena.chattcp;
+    exports com.infantaelena.chattcp.cliente;
+    opens com.infantaelena.chattcp.cliente to javafx.fxml;
 
 }

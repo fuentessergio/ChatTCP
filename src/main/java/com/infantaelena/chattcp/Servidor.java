@@ -1,5 +1,6 @@
 package com.infantaelena.chattcp;
 
+import com.infantaelena.chattcp.cliente.ClienteHilo;
 import com.infantaelena.chattcp.excepciones.ServerException;
 
 import java.io.IOException;
@@ -10,9 +11,22 @@ import java.util.Set;
 
 public class Servidor {
     private int port;
-    private Set<ClienteHilo> clientHandlers = new HashSet<>(); // para que no haya duplicados
+
+    private Set<ClienteHilo> clientHandlers; // para que no haya duplicados
 
     public Servidor(int port) {
+        setPort(port);
+        this.clientHandlers = new HashSet<>();
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        if(port<0){
+            throw new IllegalArgumentException("Error el puerto no es válido");
+        }
         this.port = port;
     }
 
@@ -22,28 +36,33 @@ public class Servidor {
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Nuevo usuario conectado");
+                System.out.println("Nuevo usuario conectado" + socket.getLocalAddress());
 
                 ClienteHilo nuevoUsuario = new ClienteHilo(socket, this);
-                clientHandlers.add(nuevoUsuario);
+                synchronized (clientHandlers) { // asegura un acceso concurrente
+                    clientHandlers.add(nuevoUsuario);
+                }
                 new Thread(nuevoUsuario).start();
             }
 
         } catch (IOException ex) {
-            throw new ServerException("El servidor no se ha podido iniciar correctamente. " + ex.getMessage());
-
+            throw new ServerException("El servidor no se ha podido iniciar correctamente o ya esta en uso. " + ex.getMessage());
         }
     }
 
     public void difundirMensaje(String message) {
-        for (ClienteHilo usuario : clientHandlers) {
-            usuario.enviarMensaje(message);
+        synchronized (clientHandlers) {
+            for (ClienteHilo usuario : clientHandlers) {
+                usuario.enviarMensaje(message);
+            }
         }
     }
 
     public void borrarUsuario(ClienteHilo usuario) {
-        clientHandlers.remove(usuario);
-        System.out.println("El usuario se ha desconectado del chat");
+        synchronized (clientHandlers) {
+            clientHandlers.remove(usuario);
+            System.out.println("El usuario se ha desconectado del chat");
+        }
     }
 
     public static void main(String[] args) throws ServerException {

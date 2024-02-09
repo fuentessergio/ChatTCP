@@ -1,0 +1,47 @@
+/* Estilos generales para el fondo y el texto */
+.root {
+    -fx-background-color: #343a40;
+    -fx-text-fill: #ffffff;
+}
+
+/* Estilos para labels */
+.label {
+    -fx-text-fill: #ffffff;
+}
+.user-label {
+    -fx-text-fill: #17c004;
+    -fx-font-size: 16pt;
+    -fx-alignment: CENTER_LEFT;
+}
+
+
+.title-label {
+    -fx-font-size: 16pt;
+    -fx-text-fill: #007bff; /* Un azul más claro para el título */
+    -fx-font-weight: bold;
+}
+
+/* Estilos para TextArea */
+.text-area {
+    -fx-font-weight: bold;
+}
+
+/* Estilos para TextField */
+.text-field {
+    -fx-background-color: #495057;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #b1b1b1;
+}
+
+/* Estilos para botones */
+.button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* Estilos para mensajes de advertencia o notificación */
+.warning-label {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 10pt;
+}

@@ -4,12 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="393.0" prefWidth="359.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.infantaelena.chattcp.ControladorChat">
+<VBox alignment="CENTER" prefHeight="393.0" prefWidth="359.0" spacing="20.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.infantaelena.chattcp.ControladorChat">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <Label alignment="TOP_CENTER" prefHeight="18.0" prefWidth="110.0" text="Proyecto Chat" textFill="#472bed" />
-   <TextArea fx:id="chatArea" prefHeight="234.0" prefWidth="305.0" editable="false" />
-   <TextField fx:id="messageField" alignment="TOP_RIGHT" prefHeight="51.0" prefWidth="319.0" promptText="Escribe un mensaje" />
-    <Button  fx:id="sendButton" prefHeight="35.0" prefWidth="59.0" text="Enviar" textFill="#1217c7" onAction="#sendMessage" />
+    <VBox alignment="TOP_LEFT">
+        <Label fx:id="label" text="Nickname:" styleClass="user-label" />
+    </VBox>
+    <TextArea fx:id="chatArea" editable="false" styleClass="text-area" />
+    <TextField fx:id="messageField" promptText="Escribe un mensaje" styleClass="text-field" />
+    <Button fx:id="sendButton" onAction="#sendMessage" styleClass="button" text="Enviar" />
+    <ComboBox fx:id="comboBoxDestinatarios" prefWidth="150" />
 </VBox>

@@ -1,6 +1,8 @@
-package com.infantaelena.chattcp;
+package com.infantaelena.chattcp.cliente;
 
+import com.infantaelena.chattcp.excepciones.MensajeException;
 import com.infantaelena.chattcp.excepciones.NicknameException;
+import com.infantaelena.chattcp.excepciones.ProcesamientoMensajeException;
 import javafx.application.Platform;
 
 import java.io.*;
@@ -17,13 +19,31 @@ public class Cliente implements Serializable {
     private Socket socket;
     private PrintWriter writer;
 
+    //Para manejar los mensajes que entran al servidor desde la interfaz gráfica (Chat)
     private Consumer<String> mensajeRecibido;
 
     public Cliente(String nickname) throws NicknameException {
         setNickname(nickname);
     }
+    public String getNickname() {
+        return this.nickname;
+    }
+    public void setNickname(String nickname) throws NicknameException {
+        if(nickname != null){
+            this.nickname = nickname;
+        } else {
+            throw new NicknameException("El nickname no puede ser nulo. Introduzca uno");
+        }
+    }
 
-    public void setMensajeRecibido(Consumer<String> mensajeRecibido) {
+    public Consumer<String> getMensajeRecibido() {
+        return mensajeRecibido;
+    }
+
+    public void setMensajeRecibido(Consumer<String> mensajeRecibido) throws ProcesamientoMensajeException {
+        if(mensajeRecibido == null){
+            throw new ProcesamientoMensajeException("El consumer de mensajes no puede ser null");
+        }
         this.mensajeRecibido = mensajeRecibido;
     }
 
@@ -54,30 +74,21 @@ public class Cliente implements Serializable {
                 }
             }).start();
         } catch (UnknownHostException ex) {
-            System.out.println("Servidor no encontrado: " + ex.getMessage());
+            System.out.println("Servidor no encontrado: " + HOSTNAME + ex.getMessage());
         } catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
+            System.out.println("Error de entrada/salida al conectar con el servidor: " + ex.getMessage());
         }
     }
 
-    public void setNickname(String nickname) throws NicknameException {
-        if(nickname != null){
-            this.nickname = nickname;
-        } else {
-            throw new NicknameException("El nickname no puede ser nulo. Introduzca uno");
-        }
-
-    }
-    public void enviarMensaje(String mensaje) {
+    public void enviarMensaje(String mensaje) throws MensajeException {
         if (writer != null) {
-            String mensajeOk = nickname + ": " + mensaje;
-            writer.println(mensajeOk);
-            writer.flush();
+            try{
+                String mensajeOk = nickname + ": " + mensaje;
+                writer.println(mensajeOk);
+                writer.flush();
+            } catch (Exception e){
+                throw new MensajeException("Fallo en el flujo de escritura. " + e.getMessage());
+            }
         }
     }
-
-    public String getNickname() {
-        return this.nickname;
-    }
-
 }
